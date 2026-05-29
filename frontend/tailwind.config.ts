@@ -44,10 +44,9 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Outfit", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Space Grotesk", "system-ui", "-apple-system", "sans-serif"],
-        mono: ["IBM Plex Mono", "monospace"],
-        serif: ["DM Serif Display", "serif"],
+        sans: ["var(--font-manrope)", "system-ui", "-apple-system", "sans-serif"],
+        display: ["var(--font-instrument-serif)", "Georgia", "serif"],
+        mono: ["var(--font-ibm-plex-mono)", "monospace"],
       },
       keyframes: {
         "accordion-down": {

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/marketrix
     username: postgres
-    password: postgres
+    password: arpon007
 
   jpa:
     show-sql: true

@@ -24,13 +24,17 @@ export type BriefResponse = BriefSubmitPayload & {
 };
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 3500);
+
   const response = await fetch(`${getApiUrl()}${path}`, {
     ...init,
+    signal: controller.signal,
     headers: {
       "Content-Type": "application/json",
       ...init?.headers,
     },
-  });
+  }).finally(() => clearTimeout(timeout));
 
   const payload = (await response.json().catch(() => null)) as ApiResponse<T> | null;
 

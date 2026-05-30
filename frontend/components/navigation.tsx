@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X, Zap, FileText } from "lucide-react";
+import { ArrowRight, LogOut, Menu, X, Zap, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
+import { clearToken, getToken } from "@/lib/api";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -19,8 +20,20 @@ export default function Navigation() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const isActive = (path: string) => pathname === path;
+
+  useEffect(() => {
+    setIsLoggedIn(!!getToken());
+  }, [pathname]);
+
+  const handleLogout = () => {
+    clearToken();
+    localStorage.removeItem("marketrix_user");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -82,13 +95,27 @@ export default function Navigation() {
 
         {/* Desktop CTA buttons */}
         <div className="hidden items-center gap-2 md:flex">
-          <Link href="/dashboard" className="btn-ghost text-sm">
-            Log in
-          </Link>
-          <Link href="/submit-brief" className="btn-primary text-sm">
-            Start brief
-            <ArrowRight size={15} />
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link href="/dashboard" className="btn-ghost text-sm">
+                Dashboard
+              </Link>
+              <button type="button" onClick={handleLogout} className="btn-secondary text-sm flex items-center gap-1.5">
+                <LogOut size={14} />
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/auth" className="btn-ghost text-sm">
+                Log in
+              </Link>
+              <Link href="/submit-brief" className="btn-primary text-sm">
+                Start brief
+                <ArrowRight size={15} />
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -124,13 +151,22 @@ export default function Navigation() {
               ))}
             </div>
             <div className="mt-4 flex gap-2 border-t border-[var(--line)] pt-4">
-              <Link href="/dashboard" className="btn-secondary flex-1 text-sm" onClick={() => setIsOpen(false)}>
-                Log in
-              </Link>
-              <Link href="/submit-brief" className="btn-primary flex-1 text-sm" onClick={() => setIsOpen(false)}>
-                Start brief
-                <ArrowRight size={14} />
-              </Link>
+              {isLoggedIn ? (
+                <button type="button" onClick={handleLogout} className="btn-secondary flex-1 text-sm flex items-center justify-center gap-1.5">
+                  <LogOut size={14} />
+                  Log out
+                </button>
+              ) : (
+                <>
+                  <Link href="/auth" className="btn-secondary flex-1 text-sm" onClick={() => setIsOpen(false)}>
+                    Log in
+                  </Link>
+                  <Link href="/submit-brief" className="btn-primary flex-1 text-sm" onClick={() => setIsOpen(false)}>
+                    Start brief
+                    <ArrowRight size={14} />
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

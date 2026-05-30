@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Zap,
 } from "lucide-react";
-import { getMyBriefs, getToken, type BriefResponse } from "@/lib/api";
+import { getMyBriefs, getRecommendations, getToken, type BriefResponse, type RecommendationResponse } from "@/lib/api";
 import { analysts } from "@/lib/market-data";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -26,16 +26,23 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function Dashboard() {
   const [briefs, setBriefs] = useState<BriefResponse[]>([]);
+  const [recommendations, setRecommendations] = useState<RecommendationResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [contacted, setContacted] = useState<string[]>([]);
 
   useEffect(() => {
-    async function fetchBriefs() {
+    async function fetchData() {
       try {
         const data = await getMyBriefs();
         setBriefs(data);
+
+        // Fetch recommendations for the first COMPLETE brief
+        const completeBrief = data.find((b) => b.status === "COMPLETE");
+        if (completeBrief) {
+          const recs = await getRecommendations(completeBrief.id);
+          setRecommendations(recs);
+        }
       } catch {
-        // Backend unavailable — show empty state
         setBriefs([]);
       } finally {
         setLoading(false);
@@ -43,7 +50,7 @@ export default function Dashboard() {
     }
 
     if (getToken()) {
-      fetchBriefs();
+      fetchData();
     } else {
       setLoading(false);
     }
@@ -196,6 +203,40 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+
+          {/* Recommendations */}
+          {recommendations.length > 0 && (
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6">
+              <div className="mb-6">
+                <span className="eyebrow text-xs">AI Recommendations</span>
+                <h2 className="mt-2 font-sans text-xl font-semibold text-[var(--ink)]">
+                  Matched for your brief
+                </h2>
+              </div>
+              <div className="grid gap-3">
+                {recommendations.slice(0, 5).map((rec) => (
+                  <article
+                    key={rec.id}
+                    className="rounded-lg border border-[var(--line)] bg-[var(--bg-surface)] p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="mb-2 flex items-center gap-2">
+                          <span className="tag tag-emerald">{rec.type}</span>
+                          <span className="mono text-xs font-semibold" style={{ color: "var(--emerald)" }}>
+                            {Math.round((rec.score ?? 0) * 100)}%
+                          </span>
+                        </div>
+                        <p className="text-sm leading-relaxed text-[var(--ink-soft)]">
+                          {rec.explanation}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}

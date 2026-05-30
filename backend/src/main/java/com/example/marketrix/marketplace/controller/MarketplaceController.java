@@ -1,6 +1,5 @@
 package com.example.marketrix.marketplace.controller;
 
-import com.example.marketrix.common.ApiResponse;
 import com.example.marketrix.marketplace.entity.*;
 import com.example.marketrix.marketplace.service.MarketplaceService;
 import lombok.RequiredArgsConstructor;
@@ -25,47 +24,47 @@ public class MarketplaceController {
     private final MarketplaceService service;
 
     @GetMapping("/services")
-    public ResponseEntity<ApiResponse<Page<ServiceListing>>> getServices(Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(service.getActiveListings(pageable)));
+    public ResponseEntity<Page<ServiceListing>> getServices(Pageable pageable) {
+        return ResponseEntity.ok(service.getActiveListings(pageable));
     }
 
     @PostMapping("/services")
     @PreAuthorize("hasRole('ANALYST')")
-    public ResponseEntity<ApiResponse<ServiceListing>> createService(Authentication auth, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<ServiceListing> createService(Authentication auth, @RequestBody Map<String, Object> body) {
         UUID analystId = (UUID) auth.getPrincipal();
         ServiceListing listing = service.createListing(analystId,
                 (String) body.get("title"), (String) body.get("description"),
                 new BigDecimal(body.get("price").toString()), (String) body.get("category"),
                 (List<String>) body.get("tags"));
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(listing));
+        return ResponseEntity.status(HttpStatus.CREATED).body(listing);
     }
 
     @GetMapping("/services/{id}")
-    public ResponseEntity<ApiResponse<ServiceListing>> getService(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(service.getListing(id)));
+    public ResponseEntity<ServiceListing> getService(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getListing(id));
     }
 
     @GetMapping("/gigs")
-    public ResponseEntity<ApiResponse<Page<Gig>>> getGigs(Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(service.getOpenGigs(pageable)));
+    public ResponseEntity<Page<Gig>> getGigs(Pageable pageable) {
+        return ResponseEntity.ok(service.getOpenGigs(pageable));
     }
 
     @PostMapping("/gigs")
     @PreAuthorize("hasRole('FOUNDER')")
-    public ResponseEntity<ApiResponse<Gig>> createGig(Authentication auth, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<Gig> createGig(Authentication auth, @RequestBody Map<String, Object> body) {
         UUID founderId = (UUID) auth.getPrincipal();
         Gig gig = service.createGig(founderId,
                 (String) body.get("title"), (String) body.get("description"),
                 new BigDecimal(body.get("budget").toString()), (List<String>) body.get("requirements"));
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(gig));
+        return ResponseEntity.status(HttpStatus.CREATED).body(gig);
     }
 
     @PostMapping("/gigs/{id}/apply")
     @PreAuthorize("hasRole('ANALYST')")
-    public ResponseEntity<ApiResponse<Proposal>> applyToGig(Authentication auth, @PathVariable UUID id, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<Proposal> applyToGig(Authentication auth, @PathVariable UUID id, @RequestBody Map<String, Object> body) {
         UUID analystId = (UUID) auth.getPrincipal();
         Proposal proposal = service.submitProposal(id, analystId,
                 (String) body.get("coverLetter"), new BigDecimal(body.get("proposedPrice").toString()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(proposal));
+        return ResponseEntity.status(HttpStatus.CREATED).body(proposal);
     }
 }

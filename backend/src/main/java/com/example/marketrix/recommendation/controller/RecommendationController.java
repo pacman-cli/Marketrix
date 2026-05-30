@@ -1,6 +1,5 @@
 package com.example.marketrix.recommendation.controller;
 
-import com.example.marketrix.common.ApiResponse;
 import com.example.marketrix.recommendation.dto.RecommendationResponse;
 import com.example.marketrix.recommendation.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +17,7 @@ public class RecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping("/{requirementId}")
-    public ResponseEntity<ApiResponse<List<RecommendationResponse>>> getRecommendations(
-            @PathVariable UUID requirementId) {
-        List<RecommendationResponse> recommendations = recommendationService.getRecommendations(requirementId);
-        return ResponseEntity.ok(ApiResponse.success(recommendations));
+    public ResponseEntity<List<RecommendationResponse>> getRecommendations(@PathVariable UUID requirementId) {
+        return ResponseEntity.ok(recommendationService.getRecommendations(requirementId));
     }
 }

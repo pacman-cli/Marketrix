@@ -1,6 +1,5 @@
 package com.example.marketrix.report.controller;
 
-import com.example.marketrix.common.ApiResponse;
 import com.example.marketrix.report.entity.*;
 import com.example.marketrix.report.enums.ReportTier;
 import com.example.marketrix.report.service.ReportService;
@@ -26,18 +25,18 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<Report>>> getCatalog(Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(reportService.getCatalog(pageable)));
+    public ResponseEntity<Page<Report>> getCatalog(Pageable pageable) {
+        return ResponseEntity.ok(reportService.getCatalog(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Report>> getReport(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(reportService.getReport(id)));
+    public ResponseEntity<Report> getReport(@PathVariable UUID id) {
+        return ResponseEntity.ok(reportService.getReport(id));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ANALYST')")
-    public ResponseEntity<ApiResponse<Report>> publishReport(Authentication auth, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<Report> publishReport(Authentication auth, @RequestBody Map<String, Object> body) {
         UUID analystId = (UUID) auth.getPrincipal();
         Report report = Report.builder()
                 .analystId(analystId)
@@ -49,13 +48,13 @@ public class ReportController {
                 .tags((List<String>) body.get("tags"))
                 .previewText((String) body.get("previewText"))
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(reportService.publishReport(report)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reportService.publishReport(report));
     }
 
     @PostMapping("/{id}/purchase")
     @PreAuthorize("hasRole('FOUNDER')")
-    public ResponseEntity<ApiResponse<ReportPurchase>> purchase(Authentication auth, @PathVariable UUID id) {
+    public ResponseEntity<ReportPurchase> purchase(Authentication auth, @PathVariable UUID id) {
         UUID founderId = (UUID) auth.getPrincipal();
-        return ResponseEntity.ok(ApiResponse.success(reportService.purchaseReport(id, founderId)));
+        return ResponseEntity.ok(reportService.purchaseReport(id, founderId));
     }
 }

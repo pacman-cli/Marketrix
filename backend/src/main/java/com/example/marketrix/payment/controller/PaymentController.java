@@ -1,6 +1,5 @@
 package com.example.marketrix.payment.controller;
 
-import com.example.marketrix.common.ApiResponse;
 import com.example.marketrix.payment.enums.TransactionType;
 import com.example.marketrix.payment.service.StripeService;
 import com.stripe.exception.SignatureVerificationException;
@@ -31,18 +30,15 @@ public class PaymentController {
     private String webhookSecret;
 
     @PostMapping("/api/payments/create-intent")
-    public ResponseEntity<ApiResponse<Map<String, String>>> createPaymentIntent(
-            Authentication auth, @RequestBody Map<String, Object> body) throws StripeException {
+    public ResponseEntity<Map<String, String>> createPaymentIntent(Authentication auth, @RequestBody Map<String, Object> body) throws StripeException {
         UUID userId = (UUID) auth.getPrincipal();
         BigDecimal amount = new BigDecimal(body.get("amount").toString());
         TransactionType type = TransactionType.valueOf((String) body.get("type"));
-        Map<String, String> result = stripeService.createPaymentIntent(userId, amount, type);
-        return ResponseEntity.ok(ApiResponse.success(result));
+        return ResponseEntity.ok(stripeService.createPaymentIntent(userId, amount, type));
     }
 
     @PostMapping("/api/webhooks/stripe")
-    public ResponseEntity<String> handleWebhook(@RequestBody String payload,
-                                                 @RequestHeader("Stripe-Signature") String sigHeader) {
+    public ResponseEntity<String> handleWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
             switch (event.getType()) {

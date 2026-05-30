@@ -1,6 +1,5 @@
 package com.example.marketrix.intake.controller;
 
-import com.example.marketrix.common.ApiResponse;
 import com.example.marketrix.intake.dto.BriefResponse;
 import com.example.marketrix.intake.dto.BriefSubmitRequest;
 import com.example.marketrix.intake.service.IntakeService;
@@ -24,23 +23,20 @@ public class IntakeController {
 
     @PostMapping("/brief")
     @PreAuthorize("hasRole('FOUNDER')")
-    public ResponseEntity<ApiResponse<BriefResponse>> submitBrief(
-            Authentication auth, @Valid @RequestBody BriefSubmitRequest request) {
+    public ResponseEntity<BriefResponse> submitBrief(Authentication auth, @Valid @RequestBody BriefSubmitRequest request) {
         UUID founderId = (UUID) auth.getPrincipal();
-        BriefResponse response = intakeService.submitBrief(founderId, request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Brief submitted successfully", response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(intakeService.submitBrief(founderId, request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<BriefResponse>> getBrief(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(intakeService.getBrief(id)));
+    public ResponseEntity<BriefResponse> getBrief(@PathVariable UUID id) {
+        return ResponseEntity.ok(intakeService.getBrief(id));
     }
 
     @GetMapping("/my-briefs")
     @PreAuthorize("hasRole('FOUNDER')")
-    public ResponseEntity<ApiResponse<List<BriefResponse>>> getMyBriefs(Authentication auth) {
+    public ResponseEntity<List<BriefResponse>> getMyBriefs(Authentication auth) {
         UUID founderId = (UUID) auth.getPrincipal();
-        return ResponseEntity.ok(ApiResponse.success(intakeService.getMyBriefs(founderId)));
+        return ResponseEntity.ok(intakeService.getMyBriefs(founderId));
     }
 }

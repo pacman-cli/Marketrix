@@ -8,7 +8,6 @@ import {
   ChevronDown,
   CircleDollarSign,
   Filter,
-  Loader2,
   Search,
   Star,
   X,
@@ -37,7 +36,6 @@ export default function Marketplace() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [shortlist, setShortlist] = useState<number[]>([]);
   const [reports, setReports] = useState<ResearchReport[]>(demoReports);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchReports() {
@@ -63,8 +61,6 @@ export default function Marketplace() {
         }
       } catch {
         // Backend unavailable — keep demo data
-      } finally {
-        setLoading(false);
       }
     }
     fetchReports();

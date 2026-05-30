@@ -3,9 +3,6 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, Check, Clock, FileText, ShieldCheck, Sparkles } from "lucide-react";
 import { submitStartupBrief } from "@/lib/api";
-import type { Brief } from "@/lib/market-data";
-
-const STORAGE_KEY = "marketrix_briefs";
 
 const stages = ["Idea", "Pre-seed", "Seed", "Series A", "Series B+", "Corporate"];
 const industries = ["SaaS", "Healthcare", "FinTech", "Consumer", "EdTech", "AI", "Other"];
@@ -17,13 +14,6 @@ function listFromText(value: string) {
     .split(/\r?\n|,/)
     .map((item) => item.trim())
     .filter(Boolean);
-}
-
-function saveBrief(brief: Brief) {
-  if (typeof window === "undefined") return;
-  const existing = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]") as Brief[];
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify([brief, ...existing].slice(0, 8)));
-  window.dispatchEvent(new Event("marketrix:briefs"));
 }
 
 const STEPS = [
@@ -64,21 +54,6 @@ export default function SubmitBriefPage() {
     setNotice("");
   };
 
-  const persistDemoBrief = (status: string) => {
-    const brief: Brief = {
-      id: `MX-${Date.now().toString().slice(-5)}`,
-      name: formData.companyName,
-      industry: formData.industry,
-      stage: formData.stage,
-      budget: formData.budget,
-      status,
-      createdAt: "Just now",
-      goals,
-    };
-    saveBrief(brief);
-    return brief;
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!stepReady) {
@@ -104,11 +79,9 @@ export default function SubmitBriefPage() {
         goals,
         problems: challenges,
       });
-      persistDemoBrief("Submitted");
       setSubmitted(true);
     } catch {
-      persistDemoBrief("Saved locally");
-      setSubmitted(true);
+      setNotice("Could not reach the server. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

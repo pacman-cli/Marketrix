@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Bookmark,
@@ -8,11 +8,13 @@ import {
   ChevronDown,
   CircleDollarSign,
   Filter,
+  Loader2,
   Search,
   Star,
   X,
 } from "lucide-react";
-import { budgetOptions, categories, reports, type ResearchReport } from "@/lib/market-data";
+import { budgetOptions, categories, reports as demoReports, type ResearchReport } from "@/lib/market-data";
+import { getReports, type ReportResponse } from "@/lib/api";
 
 const tierClass: Record<ResearchReport["tier"], string> = {
   Flagship: "tag-coral",
@@ -33,8 +35,42 @@ export default function Marketplace() {
   const [budget, setBudget] = useState("Any budget");
   const [sort, setSort] = useState("Best match");
   const [visibleCount, setVisibleCount] = useState(6);
-  const [previewId, setPreviewId] = useState(reports[0].id);
   const [shortlist, setShortlist] = useState<number[]>([]);
+  const [reports, setReports] = useState<ResearchReport[]>(demoReports);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchReports() {
+      try {
+        const data = await getReports(0, 50);
+        if (data.content && data.content.length > 0) {
+          const mapped: ResearchReport[] = data.content.map((r: ReportResponse, i: number) => ({
+            id: i + 1,
+            title: r.title,
+            author: "Analyst",
+            category: r.category || "General",
+            price: r.price,
+            rating: 4.5,
+            reviews: r.purchaseCount,
+            tier: (r.tier === "PREMIUM" ? "Flagship" : r.tier === "ACCESSIBLE" ? "Starter" : "Standard") as ResearchReport["tier"],
+            delivery: "PDF",
+            match: 90,
+            description: r.description || r.previewText || "",
+            tags: r.tags || [],
+            outcomes: [],
+          }));
+          setReports(mapped);
+        }
+      } catch {
+        // Backend unavailable — keep demo data
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchReports();
+  }, []);
+
+  const [previewId, setPreviewId] = useState(reports[0]?.id ?? 1);
 
   const filteredReports = useMemo(() => {
     const value = query.trim().toLowerCase();

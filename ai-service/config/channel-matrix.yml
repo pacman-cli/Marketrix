@@ -1,0 +1,45 @@
+# Channel Matrix — Rule-Based Weights
+# Format: stage × budget_tier → channel weights (0.0-1.0)
+# Used by ChannelRecommenderService before LLM synthesis
+
+## Stage: idea/pre-seed + Budget: bootstrap/low
+- content_marketing: 0.9
+- community_building: 0.85
+- social_organic: 0.8
+- cold_outreach: 0.7
+- seo: 0.6
+- paid_social: 0.2
+- paid_search: 0.1
+
+## Stage: seed + Budget: low/medium
+- content_marketing: 0.85
+- community_building: 0.8
+- social_organic: 0.75
+- cold_outreach: 0.75
+- seo: 0.7
+- partnerships: 0.65
+- paid_social: 0.5
+- influencer: 0.4
+- paid_search: 0.3
+
+## Stage: series-a + Budget: medium/high
+- paid_social: 0.8
+- content_marketing: 0.75
+- seo: 0.75
+- paid_search: 0.7
+- partnerships: 0.7
+- influencer: 0.6
+- events: 0.5
+- pr: 0.5
+- cold_outreach: 0.4
+
+## Stage: growth/scale + Budget: high
+- paid_social: 0.9
+- paid_search: 0.85
+- seo: 0.8
+- content_marketing: 0.75
+- partnerships: 0.75
+- pr: 0.7
+- events: 0.65
+- influencer: 0.6
+- tv_radio: 0.3

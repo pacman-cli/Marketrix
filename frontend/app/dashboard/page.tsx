@@ -162,9 +162,10 @@ export default function Dashboard() {
                 {briefs.map((brief) => {
                   const statusColor = STATUS_COLORS[brief.status] ?? "var(--ink-muted)";
                   return (
-                    <article
+                    <Link
+                      href={`/dashboard/${brief.id}`}
                       key={brief.id}
-                      className="rounded-lg border border-[var(--line)] bg-[var(--bg-surface)] p-4 transition-all hover:border-[var(--line-medium)]"
+                      className="block rounded-lg border border-[var(--line)] bg-[var(--bg-surface)] p-4 transition-all hover:border-[var(--line-medium)] hover:-translate-y-0.5"
                     >
                       <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
                         <div>
@@ -197,7 +198,7 @@ export default function Dashboard() {
                           </p>
                         </div>
                       </div>
-                    </article>
+                    </Link>
                   );
                 })}
               </div>

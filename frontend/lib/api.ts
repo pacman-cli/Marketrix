@@ -150,6 +150,32 @@ export function getRecommendations(requirementId: string) {
   return apiRequest<RecommendationResponse[]>(`/api/recommendations/${requirementId}`);
 }
 
+// --- Segments ---
+
+export type SegmentResponse = {
+  id: string;
+  requirementId: string;
+  name: string;
+  tagline: string;
+  demographics: Record<string, unknown>;
+  psychographics: Record<string, unknown>;
+  behavioralSignals: string[];
+  preferredChannels: string[];
+  viabilityScore: number;
+  rationale: string;
+};
+
+export function getSegments(requirementId: string) {
+  return apiRequest<SegmentResponse[]>(`/api/segments/${requirementId}`);
+}
+
+export function rateSegment(segmentId: string, signal: "THUMBS_UP" | "THUMBS_DOWN") {
+  return apiRequest<unknown>(`/api/segments/${segmentId}/rate`, {
+    method: "POST",
+    body: JSON.stringify({ signal }),
+  });
+}
+
 // --- Marketplace (Gigs) ---
 
 export type GigResponse = {

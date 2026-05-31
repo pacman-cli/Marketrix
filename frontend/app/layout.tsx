@@ -7,6 +7,7 @@ import {
 import "./globals.css";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import { ToastProvider } from "@/components/toast";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -45,11 +46,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <ToastProvider>
         <Navigation />
         <main className="flex-1">
           {children}
         </main>
         <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

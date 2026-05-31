@@ -9,6 +9,7 @@ import { clearToken, getToken } from "@/lib/api";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/marketplace", label: "Marketplace" },
+  { href: "/gigs", label: "Gigs" },
   { href: "/submit-brief", label: "Submit Brief" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/about", label: "About" },

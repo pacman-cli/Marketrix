@@ -154,27 +154,4 @@ export const analysts: Analyst[] = [
   },
 ];
 
-export const demoBriefs: Brief[] = [
-  {
-    id: "MX-1042",
-    name: "Northstar AI",
-    industry: "AI",
-    stage: "Seed",
-    budget: "$1,000 - $5,000",
-    status: "Matching",
-    createdAt: "Today",
-    goals: ["Find wedge market", "Benchmark buyer urgency"],
-  },
-  {
-    id: "MX-1038",
-    name: "AtlasCare",
-    industry: "Healthcare",
-    stage: "Series A",
-    budget: "$5,000+",
-    status: "Ready",
-    createdAt: "2 days ago",
-    goals: ["Map AI operations buyers", "Validate budget owner"],
-  },
-];
-
 export const budgetOptions = ["Any budget", "Under $200", "$200 - $300", "$300+"];

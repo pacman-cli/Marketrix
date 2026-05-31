@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { ArrowRight, Check, Clock, FileText, ShieldCheck, Sparkles } from "lucide-react";
-import { getToken, submitStartupBrief } from "@/lib/api";
+import { submitStartupBrief } from "@/lib/api";
+import AuthGuard from "@/components/auth-guard";
 
 const stages = ["Idea", "Pre-seed", "Seed", "Series A", "Series B+", "Corporate"];
 const industries = ["SaaS", "Healthcare", "FinTech", "Consumer", "EdTech", "AI", "Other"];
@@ -24,17 +24,10 @@ const STEPS = [
 ];
 
 export default function SubmitBriefPage() {
-  const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [notice, setNotice] = useState("");
-
-  useEffect(() => {
-    if (!getToken()) {
-      router.push("/auth");
-    }
-  }, [router]);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -129,6 +122,7 @@ export default function SubmitBriefPage() {
   }
 
   return (
+    <AuthGuard>
     <div className="min-h-screen pb-20" style={{ background: "var(--bg-base)" }}>
 
       {/* Page header */}
@@ -462,5 +456,6 @@ export default function SubmitBriefPage() {
         </form>
       </section>
     </div>
+    </AuthGuard>
   );
 }

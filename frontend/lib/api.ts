@@ -136,10 +136,6 @@ export function getMyBriefs() {
   return apiRequest<BriefResponse[]>("/api/startups/my-briefs");
 }
 
-export function getBrief(id: string) {
-  return apiRequest<BriefResponse>(`/api/startups/${id}`);
-}
-
 // --- Reports ---
 
 export function getReports(page = 0, size = 20) {
@@ -148,12 +144,41 @@ export function getReports(page = 0, size = 20) {
   );
 }
 
-export function getReport(id: string) {
-  return apiRequest<ReportResponse>(`/api/reports/${id}`);
-}
-
 // --- Recommendations ---
 
 export function getRecommendations(requirementId: string) {
   return apiRequest<RecommendationResponse[]>(`/api/recommendations/${requirementId}`);
+}
+
+// --- Marketplace (Gigs) ---
+
+export type GigResponse = {
+  id: string;
+  founderId: string;
+  title: string;
+  description: string;
+  budget: number;
+  requirements: string[];
+  status: string;
+  createdAt: string;
+};
+
+export function getGigs(page = 0, size = 20) {
+  return apiRequest<{ content: GigResponse[]; totalElements: number; totalPages: number }>(
+    `/api/marketplace/gigs?page=${page}&size=${size}`
+  );
+}
+
+export function createGig(title: string, description: string, budget: number, requirements: string[]) {
+  return apiRequest<GigResponse>("/api/marketplace/gigs", {
+    method: "POST",
+    body: JSON.stringify({ title, description, budget: budget.toString(), requirements }),
+  });
+}
+
+export function applyToGig(gigId: string, coverLetter: string, proposedPrice: number) {
+  return apiRequest<unknown>(`/api/marketplace/gigs/${gigId}/apply`, {
+    method: "POST",
+    body: JSON.stringify({ coverLetter, proposedPrice: proposedPrice.toString() }),
+  });
 }

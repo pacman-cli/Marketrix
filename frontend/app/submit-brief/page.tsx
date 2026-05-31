@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Check, Clock, FileText, ShieldCheck, Sparkles } from "lucide-react";
-import { submitStartupBrief } from "@/lib/api";
+import { getToken, submitStartupBrief } from "@/lib/api";
 
 const stages = ["Idea", "Pre-seed", "Seed", "Series A", "Series B+", "Corporate"];
 const industries = ["SaaS", "Healthcare", "FinTech", "Consumer", "EdTech", "AI", "Other"];
@@ -23,10 +24,18 @@ const STEPS = [
 ];
 
 export default function SubmitBriefPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    if (!getToken()) {
+      router.push("/auth");
+    }
+  }, [router]);
+
   const [formData, setFormData] = useState({
     companyName: "",
     industry: "",

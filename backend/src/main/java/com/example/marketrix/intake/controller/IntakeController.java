@@ -3,6 +3,7 @@ package com.example.marketrix.intake.controller;
 import com.example.marketrix.intake.dto.BriefResponse;
 import com.example.marketrix.intake.dto.BriefSubmitRequest;
 import com.example.marketrix.intake.service.IntakeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/startups")
 @RequiredArgsConstructor
+@Tag(name = "Briefs", description = "Submit and manage startup briefs")
 public class IntakeController {
 
     private final IntakeService intakeService;

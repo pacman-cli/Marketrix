@@ -3,6 +3,7 @@ package com.example.marketrix.strategist.controller;
 import com.example.marketrix.strategist.dto.StrategistProfileRequest;
 import com.example.marketrix.strategist.entity.StrategistProfile;
 import com.example.marketrix.strategist.service.StrategistService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/strategists")
 @RequiredArgsConstructor
+@Tag(name = "Strategists", description = "Analyst profile management")
 public class StrategistController {
 
     private final StrategistService strategistService;

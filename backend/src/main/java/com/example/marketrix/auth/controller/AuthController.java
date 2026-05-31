@@ -2,6 +2,8 @@ package com.example.marketrix.auth.controller;
 
 import com.example.marketrix.auth.dto.*;
 import com.example.marketrix.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth", description = "Register, login, refresh, logout")
 public class AuthController {
 
     private final AuthService authService;

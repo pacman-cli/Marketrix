@@ -4,6 +4,7 @@ import com.example.marketrix.ai.entity.AudienceSegment;
 import com.example.marketrix.ai.repository.AudienceSegmentRepository;
 import com.example.marketrix.feedback.entity.Feedback;
 import com.example.marketrix.feedback.repository.FeedbackRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/segments")
 @RequiredArgsConstructor
+@Tag(name = "Segments", description = "AI-generated audience segments")
 public class SegmentController {
 
     private final AudienceSegmentRepository segmentRepository;
